@@ -1,6 +1,7 @@
 package at.technikum.mti.fancycoverflow;
 
 import android.content.Context;
+import android.graphics.Camera;
 import android.graphics.Matrix;
 import android.util.AttributeSet;
 import android.view.View;
@@ -14,6 +15,13 @@ public class FancyCoverFlow extends Gallery {
     // =============================================================================
 
     private float unselectedAlpha;
+
+    /**
+     * Camera used for view transformation.
+     */
+    private Camera transformationCamera;
+
+    private int mMaxRotationAngle = 75;
 
     // =============================================================================
     // Constructors
@@ -36,6 +44,7 @@ public class FancyCoverFlow extends Gallery {
     }
 
     private void initialize() {
+        this.transformationCamera = new Camera();
         this.setSpacing(0);
     }
 
@@ -64,17 +73,43 @@ public class FancyCoverFlow extends Gallery {
             child.invalidate();
         }
 
+        // TODO: Check int division.
+        final int coverFlowCenter = this.getWidth() / 2;
+        final int childCenter = child.getLeft() + child.getWidth() / 2;
+        final int childWidth = child.getWidth();
+
+        int rotationAngle;
+
         t.clear();
 
-        final int coverFlowCenter = (int) (this.getWidth() / 2.0f);
-        final int childViewCenter = child.getLeft() + (int) (child.getWidth() / 2.0f);
-        final int distance = coverFlowCenter-childViewCenter;
+        t.setTransformationType(Transformation.TYPE_MATRIX);
 
-        t.setAlpha((float) Math.sin(distance/100));
+        if (childCenter == coverFlowCenter) {
+            rotationAngle = 0;
+        } else {
+            rotationAngle = (int) ((float) (coverFlowCenter - childCenter) / childWidth * mMaxRotationAngle);
+            if (Math.abs(rotationAngle) > mMaxRotationAngle) {
+                rotationAngle = rotationAngle < 0 ? -mMaxRotationAngle : mMaxRotationAngle;
+            }
+        }
 
-        Matrix m = t.getMatrix();
+        final int width = child.getWidth();
+        final int height = child.getHeight();
 
-//        m.postRotate(distance);
+        final Matrix imageMatrix = t.getMatrix();
+
+        this.transformationCamera.save();
+        this.transformationCamera.rotateY(rotationAngle);
+        this.transformationCamera.getMatrix(imageMatrix);
+        this.transformationCamera.restore();
+
+        final float maxScaleDown = 0.7f;
+        final float zoomAmount = Math.max(maxScaleDown, ((Math.abs(rotationAngle) * (maxScaleDown - 1)) / mMaxRotationAngle) + 1);
+
+        // Always do a fresh transformation.
+        imageMatrix.postScale(zoomAmount, zoomAmount);
+        imageMatrix.preTranslate(-width / 2.0f, -height / 2.0f);
+        imageMatrix.postTranslate(width / 2.0f, height / 2.0f);
 
         return true;
     }

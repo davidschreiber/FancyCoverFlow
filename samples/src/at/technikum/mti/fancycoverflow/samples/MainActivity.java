@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
         this.fancyCoverFlow = (FancyCoverFlow) this.findViewById(R.id.fancyCoverFlow);
         this.fancyCoverFlow.setAdapter(new CoverFlowAdapter());
         this.fancyCoverFlow.setUnselectedAlpha(0.5f);
-        this.fancyCoverFlow.setSpacing(100);
+        this.fancyCoverFlow.setSpacing(50);
     }
 
     // =============================================================================
