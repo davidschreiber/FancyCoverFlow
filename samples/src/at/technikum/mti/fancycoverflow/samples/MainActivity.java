@@ -1,18 +1,13 @@
 package at.technikum.mti.fancycoverflow.samples;
 
 import android.app.Activity;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import at.technikum.mti.fancycoverflow.FancyCoverFlow;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 public class MainActivity extends Activity {
 
@@ -36,8 +31,13 @@ public class MainActivity extends Activity {
 
         this.fancyCoverFlow = (FancyCoverFlow) this.findViewById(R.id.fancyCoverFlow);
         this.fancyCoverFlow.setAdapter(new CoverFlowAdapter());
-        this.fancyCoverFlow.setUnselectedAlpha(0.5f);
-        this.fancyCoverFlow.setSpacing(50);
+        this.fancyCoverFlow.setUnselectedAlpha(0.0f);
+        this.fancyCoverFlow.setSpacing(-50);
+        this.fancyCoverFlow.setMaxRotation(90);
+        this.fancyCoverFlow.setMaxScaleDown(0.5f);
+
+        // TODO: Make option to enable automatic action distance (action distance == cover flow width).
+        this.fancyCoverFlow.setActionDistance(350);
     }
 
     // =============================================================================
