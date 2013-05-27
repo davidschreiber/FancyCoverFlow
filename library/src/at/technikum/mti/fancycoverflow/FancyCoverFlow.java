@@ -182,6 +182,7 @@ public class FancyCoverFlow extends Gallery {
 
     @Override
     protected boolean getChildStaticTransformation(View child, Transformation t) {
+        // We can cast here because FancyCoverFlowAdapter only creates wrappers.
         FancyCoverFlowItemWrapper item = (FancyCoverFlowItemWrapper) child;
 
         // Since Jelly Bean childs won't get invalidated automatically, needs to be added for the smooth coverflow animation
@@ -189,12 +190,10 @@ public class FancyCoverFlow extends Gallery {
             item.invalidate();
         }
 
-        // TODO: Check int division.
         final int coverFlowCenter = this.getWidth() / 2;
-        final int childCenter = item.getLeft() + item.getWidth() / 2;
-
         final int childWidth = item.getWidth();
-        final int childHeight = item.getWidth();
+        final int childHeight = item.getHeight();
+        final int childCenter = item.getLeft() + childWidth / 2;
 
         // Calculate the abstract amount for all effects.
         final float effectsAmount = Math.min(1.0f, Math.max(-1.0f, (1.0f / this.actionDistance) * (childCenter - coverFlowCenter)));
@@ -212,6 +211,7 @@ public class FancyCoverFlow extends Gallery {
         // Apply alpha.
         t.setAlpha(alphaAmount);
 
+        // Pass over saturation to the wrapper.
         item.setSaturation(saturationAmount);
 
         // Apply rotation.
