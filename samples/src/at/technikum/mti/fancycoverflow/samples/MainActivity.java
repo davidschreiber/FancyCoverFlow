@@ -4,11 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import at.technikum.mti.fancycoverflow.FancyCoverFlow;
-import at.technikum.mti.fancycoverflow.views.FancyCoverFlowItem;
+import at.technikum.mti.fancycoverflow.FancyCoverFlowAdapter;
 
 public class MainActivity extends Activity {
 
@@ -31,7 +30,8 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main);
 
         this.fancyCoverFlow = (FancyCoverFlow) this.findViewById(R.id.fancyCoverFlow);
-        this.fancyCoverFlow.setAdapter(new CoverFlowAdapter());
+
+        this.fancyCoverFlow.setAdapter(new SampleCoverFlowAdapter());
         this.fancyCoverFlow.setUnselectedAlpha(1.0f);
         this.fancyCoverFlow.setUnselectedSaturation(0.0f);
         this.fancyCoverFlow.setSpacing(-50);
@@ -39,14 +39,14 @@ public class MainActivity extends Activity {
         this.fancyCoverFlow.setMaxScaleDown(0.5f);
 
         // TODO: Make option to enable automatic action distance (action distance == cover flow width).
-        this.fancyCoverFlow.setActionDistance(400);
+        this.fancyCoverFlow.setActionDistance(100);
     }
 
     // =============================================================================
     // Private classes
     // =============================================================================
 
-    private static class CoverFlowAdapter extends BaseAdapter {
+    private static class SampleCoverFlowAdapter extends FancyCoverFlowAdapter {
 
         // =============================================================================
         // Private members
@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
         // Constructor
         // =============================================================================
 
-        private CoverFlowAdapter() {
+        private SampleCoverFlowAdapter() {
 
         }
 
@@ -82,7 +82,7 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        public View getView(int i, View reuseableView, ViewGroup viewGroup) {
+        public View getCoverFlowItem(int i, View reuseableView, ViewGroup viewGroup) {
             ImageView imageView = null;
 
             if (reuseableView != null) {
@@ -94,12 +94,7 @@ public class MainActivity extends Activity {
             }
 
             imageView.setImageResource(this.getItem(i));
-
-            FancyCoverFlowItem coverFlowItem = new FancyCoverFlowItem(viewGroup.getContext());
-            coverFlowItem.addView(imageView);
-            coverFlowItem.setLayoutParams(new Gallery.LayoutParams(200, 400));
-
-            return coverFlowItem;
+            return imageView;
         }
     }
 

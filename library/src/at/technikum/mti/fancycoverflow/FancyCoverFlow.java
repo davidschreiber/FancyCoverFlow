@@ -4,9 +4,10 @@ import android.content.Context;
 import android.graphics.*;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Transformation;
 import android.widget.Gallery;
-import at.technikum.mti.fancycoverflow.views.FancyCoverFlowItem;
+import android.widget.SpinnerAdapter;
 
 public class FancyCoverFlow extends Gallery {
 
@@ -23,6 +24,9 @@ public class FancyCoverFlow extends Gallery {
 
     private int maxRotation = 75;
 
+    /**
+     * Factor (0-1) that defines how much the unselected children should be scaled down. 1 means no scaledown.
+     */
     private float maxScaleDown;
 
     /**
@@ -61,59 +65,124 @@ public class FancyCoverFlow extends Gallery {
     }
 
     // =============================================================================
-    // Getter
+    // Getter / Setter
     // =============================================================================
 
+    /**
+     * Use this to provide a {@link FancyCoverFlowAdapter} to the coverflow. This
+     * method will throw an {@link ClassCastException} if the passed adapter does not
+     * sublass {@link FancyCoverFlowAdapter}.
+     *
+     * @param adapter
+     */
+    @Override
+    public void setAdapter(SpinnerAdapter adapter) {
+        if (!(adapter instanceof FancyCoverFlowAdapter)) {
+            throw new ClassCastException(FancyCoverFlow.class.getName() + " only works in conjunction with a " + FancyCoverFlowAdapter.class.getName());
+        }
 
+        super.setAdapter(adapter);
+    }
+
+    /**
+     * Returns the maximum rotation that is applied to items left and right of the center of the coverflow.
+     *
+     * @return
+     */
     public int getMaxRotation() {
         return maxRotation;
     }
 
+    /**
+     * Sets the maximum rotation that is applied to items left and right of the center of the coverflow.
+     *
+     * @param maxRotation
+     */
     public void setMaxRotation(int maxRotation) {
         this.maxRotation = maxRotation;
     }
 
+    /**
+     * TODO: Write doc
+     *
+     * @return
+     */
     public float getUnselectedAlpha() {
         return this.unselectedAlpha;
     }
 
+    /**
+     * TODO: Write doc
+     *
+     * @return
+     */
     public float getMaxScaleDown() {
         return maxScaleDown;
     }
 
+    /**
+     * TODO: Write doc
+     *
+     * @param maxScaledown
+     */
     public void setMaxScaleDown(float maxScaledown) {
         this.maxScaleDown = maxScaledown;
     }
 
+    /**
+     * TODO: Write doc
+     *
+     * @return
+     */
     public int getActionDistance() {
         return actionDistance;
     }
 
+    /**
+     * TODO: Write doc
+     *
+     * @param actionDistance
+     */
     public void setActionDistance(int actionDistance) {
         this.actionDistance = actionDistance;
     }
 
+    /**
+     * TODO: Write doc
+     *
+     * @param unselectedAlpha
+     */
     @Override
     public void setUnselectedAlpha(float unselectedAlpha) {
         super.setUnselectedAlpha(unselectedAlpha);
         this.unselectedAlpha = unselectedAlpha;
     }
 
+    /**
+     * TODO: Write doc
+     *
+     * @return
+     */
     public float getUnselectedSaturation() {
         return unselectedSaturation;
     }
 
+    /**
+     * TODO: Write doc
+     *
+     * @param unselectedSaturation
+     */
     public void setUnselectedSaturation(float unselectedSaturation) {
         this.unselectedSaturation = unselectedSaturation;
     }
 
-// =============================================================================
+    // =============================================================================
     // Supertype overrides
     // =============================================================================
 
     @Override
     protected boolean getChildStaticTransformation(View child, Transformation t) {
-        FancyCoverFlowItem item = (FancyCoverFlowItem) child;
+        FancyCoverFlowItemWrapper item = (FancyCoverFlowItemWrapper) child;
 
         // Since Jelly Bean childs won't get invalidated automatically, needs to be added for the smooth coverflow animation
         if (android.os.Build.VERSION.SDK_INT >= 16) {
@@ -158,5 +227,23 @@ public class FancyCoverFlow extends Gallery {
         imageMatrix.postTranslate(childWidth / 2.0f, childHeight / 2.0f);
 
         return true;
+    }
+
+    // =============================================================================
+    // Public classes
+    // =============================================================================
+
+    public static class LayoutParams extends Gallery.LayoutParams {
+        public LayoutParams(Context c, AttributeSet attrs) {
+            super(c, attrs);
+        }
+
+        public LayoutParams(int w, int h) {
+            super(w, h);
+        }
+
+        public LayoutParams(ViewGroup.LayoutParams source) {
+            super(source);
+        }
     }
 }
