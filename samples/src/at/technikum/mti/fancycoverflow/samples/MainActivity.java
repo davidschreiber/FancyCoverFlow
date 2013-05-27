@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import at.technikum.mti.fancycoverflow.FancyCoverFlow;
+import at.technikum.mti.fancycoverflow.views.FancyCoverFlowItem;
 
 public class MainActivity extends Activity {
 
@@ -31,13 +32,14 @@ public class MainActivity extends Activity {
 
         this.fancyCoverFlow = (FancyCoverFlow) this.findViewById(R.id.fancyCoverFlow);
         this.fancyCoverFlow.setAdapter(new CoverFlowAdapter());
-        this.fancyCoverFlow.setUnselectedAlpha(0.0f);
+        this.fancyCoverFlow.setUnselectedAlpha(1.0f);
+        this.fancyCoverFlow.setUnselectedSaturation(0.0f);
         this.fancyCoverFlow.setSpacing(-50);
-        this.fancyCoverFlow.setMaxRotation(90);
+        this.fancyCoverFlow.setMaxRotation(25);
         this.fancyCoverFlow.setMaxScaleDown(0.5f);
 
         // TODO: Make option to enable automatic action distance (action distance == cover flow width).
-        this.fancyCoverFlow.setActionDistance(350);
+        this.fancyCoverFlow.setActionDistance(400);
     }
 
     // =============================================================================
@@ -88,11 +90,16 @@ public class MainActivity extends Activity {
             } else {
                 imageView = new ImageView(viewGroup.getContext());
                 imageView.setLayoutParams(new Gallery.LayoutParams(200, 400));
+
             }
 
             imageView.setImageResource(this.getItem(i));
 
-            return imageView;
+            FancyCoverFlowItem coverFlowItem = new FancyCoverFlowItem(viewGroup.getContext());
+            coverFlowItem.addView(imageView);
+            coverFlowItem.setLayoutParams(new Gallery.LayoutParams(200, 400));
+
+            return coverFlowItem;
         }
     }
 

@@ -1,12 +1,12 @@
 package at.technikum.mti.fancycoverflow;
 
 import android.content.Context;
-import android.graphics.Camera;
-import android.graphics.Matrix;
+import android.graphics.*;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Transformation;
 import android.widget.Gallery;
+import at.technikum.mti.fancycoverflow.views.FancyCoverFlowItem;
 
 public class FancyCoverFlow extends Gallery {
 
@@ -29,6 +29,11 @@ public class FancyCoverFlow extends Gallery {
      * Distance in pixels between the transformation effects (alpha, rotation, zoom) are applied.
      */
     private int actionDistance;
+
+    /**
+     * Saturation factor (0-1) of items that reach the outer effects distance.
+     */
+    private float unselectedSaturation;
 
     // =============================================================================
     // Constructors
@@ -94,23 +99,33 @@ public class FancyCoverFlow extends Gallery {
         this.unselectedAlpha = unselectedAlpha;
     }
 
-    // =============================================================================
+    public float getUnselectedSaturation() {
+        return unselectedSaturation;
+    }
+
+    public void setUnselectedSaturation(float unselectedSaturation) {
+        this.unselectedSaturation = unselectedSaturation;
+    }
+
+// =============================================================================
     // Supertype overrides
     // =============================================================================
 
     @Override
     protected boolean getChildStaticTransformation(View child, Transformation t) {
+        FancyCoverFlowItem item = (FancyCoverFlowItem) child;
+
         // Since Jelly Bean childs won't get invalidated automatically, needs to be added for the smooth coverflow animation
         if (android.os.Build.VERSION.SDK_INT >= 16) {
-            child.invalidate();
+            item.invalidate();
         }
 
         // TODO: Check int division.
         final int coverFlowCenter = this.getWidth() / 2;
-        final int childCenter = child.getLeft() + child.getWidth() / 2;
+        final int childCenter = item.getLeft() + item.getWidth() / 2;
 
-        final int childWidth = child.getWidth();
-        final int childHeight = child.getWidth();
+        final int childWidth = item.getWidth();
+        final int childHeight = item.getWidth();
 
         // Calculate the abstract amount for all effects.
         final float effectsAmount = Math.min(1.0f, Math.max(-1.0f, (1.0f / this.actionDistance) * (childCenter - coverFlowCenter)));
@@ -119,6 +134,7 @@ public class FancyCoverFlow extends Gallery {
         final int rotationAngle = (int) (-effectsAmount * this.maxRotation);
         final float zoomAmount = 1 - this.maxScaleDown * Math.abs(effectsAmount);
         final float alphaAmount = (this.unselectedAlpha - 1) * Math.abs(effectsAmount) + 1;
+        final float saturationAmount = (this.unselectedSaturation - 1) * Math.abs(effectsAmount) + 1;
 
         // Clear previous transformations and set transformation type (matrix + alpha).
         t.clear();
@@ -126,6 +142,8 @@ public class FancyCoverFlow extends Gallery {
 
         // Apply alpha.
         t.setAlpha(alphaAmount);
+
+        item.setSaturation(saturationAmount);
 
         // Apply rotation.
         final Matrix imageMatrix = t.getMatrix();
