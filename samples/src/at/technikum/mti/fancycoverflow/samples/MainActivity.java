@@ -1,3 +1,20 @@
+/*
+ * Copyright 2013 David Schreiber
+ *           2013 John Paul Nalog
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package at.technikum.mti.fancycoverflow.samples;
 
 import android.app.Activity;
@@ -32,11 +49,11 @@ public class MainActivity extends Activity {
         this.fancyCoverFlow = (FancyCoverFlow) this.findViewById(R.id.fancyCoverFlow);
 
         this.fancyCoverFlow.setAdapter(new SampleCoverFlowAdapter());
-        this.fancyCoverFlow.setUnselectedAlpha(1.0f);
+        this.fancyCoverFlow.setUnselectedAlpha(0.0f);
         this.fancyCoverFlow.setUnselectedSaturation(1.0f);
-        this.fancyCoverFlow.setSpacing(0);
-        this.fancyCoverFlow.setMaxRotation(0);
-        this.fancyCoverFlow.setUnselectedScale(1.0f);
+        this.fancyCoverFlow.setUnselectedScale(1.5f);
+        this.fancyCoverFlow.setSpacing(50);
+        this.fancyCoverFlow.setMaxRotation(30);
         this.fancyCoverFlow.setScaleDownGravity(FancyCoverFlow.SCALEDOWN_GRAVITY_CENTER);
         this.fancyCoverFlow.setActionDistance(FancyCoverFlow.ACTION_DISTANCE_AUTO);
     }

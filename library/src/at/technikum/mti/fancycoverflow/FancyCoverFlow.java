@@ -1,3 +1,20 @@
+/*
+ * Copyright 2013 David Schreiber
+ *           2013 John Paul Nalog
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package at.technikum.mti.fancycoverflow;
 
 import android.content.Context;
@@ -238,7 +255,7 @@ public class FancyCoverFlow extends Gallery {
         final int childCenter = item.getLeft() + childWidth / 2;
 
         // Use coverflow width when its defined as automatic.
-        final int actionDistance = (this.actionDistance == ACTION_DISTANCE_AUTO) ? (int) ((coverFlowWidth) / 2.0f) : this.actionDistance;
+        final int actionDistance = (this.actionDistance == ACTION_DISTANCE_AUTO) ? (int) ((coverFlowWidth + childWidth) / 2.0f) : this.actionDistance;
 
         // Calculate the abstract amount for all effects.
         final float effectsAmount = Math.min(1.0f, Math.max(-1.0f, (1.0f / actionDistance) * (childCenter - coverFlowCenter)));
@@ -274,7 +291,6 @@ public class FancyCoverFlow extends Gallery {
         imageMatrix.preTranslate(-translateX, -translateY);
         imageMatrix.postScale(zoomAmount, zoomAmount);
         imageMatrix.postTranslate(translateX, translateY);
-
 
         return true;
     }
