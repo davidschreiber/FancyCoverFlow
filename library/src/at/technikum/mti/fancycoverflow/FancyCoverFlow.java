@@ -17,13 +17,11 @@ public class FancyCoverFlow extends Gallery {
 
     public static final int ACTION_DISTANCE_AUTO = Integer.MAX_VALUE;
 
-    // =============================================================================
-    // Enums
-    // =============================================================================
+    public static final float SCALEDOWN_GRAVITY_TOP = 0.0f;
 
-    public enum ScaleDownGravity {
-        Top, Center, Bottom
-    }
+    public static final float SCALEDOWN_GRAVITY_CENTER = 0.5f;
+
+    public static final float SCALEDOWN_GRAVITY_BOTTOM = 1.0f;
 
     // =============================================================================
     // Private members
@@ -52,7 +50,7 @@ public class FancyCoverFlow extends Gallery {
     /**
      * TODO: Doc
      */
-    private ScaleDownGravity scaleDownGravity = ScaleDownGravity.Center;
+    private float scaleDownGravity = SCALEDOWN_GRAVITY_CENTER;
 
     /**
      * Distance in pixels between the transformation effects (alpha, rotation, zoom) are applied.
@@ -159,7 +157,7 @@ public class FancyCoverFlow extends Gallery {
      *
      * @return
      */
-    public ScaleDownGravity getScaleDownGravity() {
+    public float getScaleDownGravity() {
         return scaleDownGravity;
     }
 
@@ -168,7 +166,7 @@ public class FancyCoverFlow extends Gallery {
      *
      * @param scaleDownGravity
      */
-    public void setScaleDownGravity(ScaleDownGravity scaleDownGravity) {
+    public void setScaleDownGravity(float scaleDownGravity) {
         this.scaleDownGravity = scaleDownGravity;
     }
 
@@ -268,21 +266,9 @@ public class FancyCoverFlow extends Gallery {
         this.transformationCamera.getMatrix(imageMatrix);
         this.transformationCamera.restore();
 
-
+        // Calculate the scale anchor (y anchor can be altered)
         final float translateX = childWidth / 2.0f;
-        float translateY = 0;
-
-        switch (this.scaleDownGravity) {
-            case Top:
-                translateY = 0;
-                break;
-            case Center:
-                translateY = childHeight / 2.0f;
-                break;
-            case Bottom:
-                translateY = childHeight;
-                break;
-        }
+        final float translateY = childHeight * this.scaleDownGravity;
 
         // Zoom.
         imageMatrix.preTranslate(-translateX, -translateY);

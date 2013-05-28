@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
         this.fancyCoverFlow.setSpacing(0);
         this.fancyCoverFlow.setMaxRotation(0);
         this.fancyCoverFlow.setUnselectedScale(1.0f);
-        this.fancyCoverFlow.setScaleDownGravity(FancyCoverFlow.ScaleDownGravity.Bottom);
+        this.fancyCoverFlow.setScaleDownGravity(FancyCoverFlow.SCALEDOWN_GRAVITY_CENTER);
         this.fancyCoverFlow.setActionDistance(FancyCoverFlow.ACTION_DISTANCE_AUTO);
     }
 
