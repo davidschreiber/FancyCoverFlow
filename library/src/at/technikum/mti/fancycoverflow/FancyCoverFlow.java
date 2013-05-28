@@ -247,7 +247,7 @@ public class FancyCoverFlow extends Gallery {
 
         // Calculate the value for each effect.
         final int rotationAngle = (int) (-effectsAmount * this.maxRotation);
-        final float zoomAmount = 1 - this.unselectedScale * Math.abs(effectsAmount);
+        final float zoomAmount = (this.unselectedScale - 1) * Math.abs(effectsAmount) + 1;
         final float alphaAmount = (this.unselectedAlpha - 1) * Math.abs(effectsAmount) + 1;
         final float saturationAmount = (this.unselectedSaturation - 1) * Math.abs(effectsAmount) + 1;
 
