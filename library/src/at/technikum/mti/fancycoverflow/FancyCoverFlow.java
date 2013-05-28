@@ -14,6 +14,9 @@ public class FancyCoverFlow extends Gallery {
     // =============================================================================
     // Constants
     // =============================================================================
+
+    public static final int ACTION_DISTANCE_AUTO = Integer.MAX_VALUE;
+
     // =============================================================================
     // Enums
     // =============================================================================
@@ -26,6 +29,9 @@ public class FancyCoverFlow extends Gallery {
     // Private members
     // =============================================================================
 
+    /**
+     * TODO: Doc
+     */
     private float unselectedAlpha;
 
     /**
@@ -33,12 +39,16 @@ public class FancyCoverFlow extends Gallery {
      */
     private Camera transformationCamera;
 
+    /**
+     * TODO: Doc
+     */
     private int maxRotation = 75;
 
     /**
      * Factor (0-1) that defines how much the unselected children should be scaled down. 1 means no scaledown.
      */
-    private float maxScaleDown;
+    private float unselectedScale;
+
     /**
      * TODO: Doc
      */
@@ -131,18 +141,19 @@ public class FancyCoverFlow extends Gallery {
      *
      * @return
      */
-    public float getMaxScaleDown() {
-        return maxScaleDown;
+    public float getUnselectedScale() {
+        return unselectedScale;
     }
 
     /**
      * TODO: Write doc
      *
-     * @param maxScaledown
+     * @param unselectedScale
      */
-    public void setMaxScaleDown(float maxScaledown) {
-        this.maxScaleDown = maxScaledown;
+    public void setUnselectedScale(float unselectedScale) {
+        this.unselectedScale = unselectedScale;
     }
+
     /**
      * TODO: Doc
      *
@@ -222,17 +233,21 @@ public class FancyCoverFlow extends Gallery {
             item.invalidate();
         }
 
-        final int coverFlowCenter = this.getWidth() / 2;
+        final int coverFlowWidth = this.getWidth();
+        final int coverFlowCenter = coverFlowWidth / 2;
         final int childWidth = item.getWidth();
         final int childHeight = item.getHeight();
         final int childCenter = item.getLeft() + childWidth / 2;
 
+        // Use coverflow width when its defined as automatic.
+        final int actionDistance = (this.actionDistance == ACTION_DISTANCE_AUTO) ? (int) ((coverFlowWidth) / 2.0f) : this.actionDistance;
+
         // Calculate the abstract amount for all effects.
-        final float effectsAmount = Math.min(1.0f, Math.max(-1.0f, (1.0f / this.actionDistance) * (childCenter - coverFlowCenter)));
+        final float effectsAmount = Math.min(1.0f, Math.max(-1.0f, (1.0f / actionDistance) * (childCenter - coverFlowCenter)));
 
         // Calculate the value for each effect.
         final int rotationAngle = (int) (-effectsAmount * this.maxRotation);
-        final float zoomAmount = 1 - this.maxScaleDown * Math.abs(effectsAmount);
+        final float zoomAmount = 1 - this.unselectedScale * Math.abs(effectsAmount);
         final float alphaAmount = (this.unselectedAlpha - 1) * Math.abs(effectsAmount) + 1;
         final float saturationAmount = (this.unselectedSaturation - 1) * Math.abs(effectsAmount) + 1;
 

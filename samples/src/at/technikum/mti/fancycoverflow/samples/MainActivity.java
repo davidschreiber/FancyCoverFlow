@@ -33,13 +33,12 @@ public class MainActivity extends Activity {
 
         this.fancyCoverFlow.setAdapter(new SampleCoverFlowAdapter());
         this.fancyCoverFlow.setUnselectedAlpha(1.0f);
-        this.fancyCoverFlow.setUnselectedSaturation(0.0f);
-        this.fancyCoverFlow.setSpacing(-50);
-        this.fancyCoverFlow.setMaxRotation(25);
-        this.fancyCoverFlow.setMaxScaleDown(0.5f);
-
-        // TODO: Make option to enable automatic action distance (action distance == cover flow width).
-        this.fancyCoverFlow.setActionDistance(100);
+        this.fancyCoverFlow.setUnselectedSaturation(1.0f);
+        this.fancyCoverFlow.setSpacing(0);
+        this.fancyCoverFlow.setMaxRotation(0);
+        this.fancyCoverFlow.setUnselectedScale(1.0f);
+        this.fancyCoverFlow.setScaleDownGravity(FancyCoverFlow.ScaleDownGravity.Bottom);
+        this.fancyCoverFlow.setActionDistance(FancyCoverFlow.ACTION_DISTANCE_AUTO);
     }
 
     // =============================================================================
@@ -89,7 +88,8 @@ public class MainActivity extends Activity {
                 imageView = (ImageView) reuseableView;
             } else {
                 imageView = new ImageView(viewGroup.getContext());
-                imageView.setLayoutParams(new Gallery.LayoutParams(200, 400));
+                imageView.setAdjustViewBounds(true);
+                imageView.setLayoutParams(new Gallery.LayoutParams(300, 400));
 
             }
 
