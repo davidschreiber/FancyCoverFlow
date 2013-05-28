@@ -12,6 +12,17 @@ import android.widget.SpinnerAdapter;
 public class FancyCoverFlow extends Gallery {
 
     // =============================================================================
+    // Constants
+    // =============================================================================
+    // =============================================================================
+    // Enums
+    // =============================================================================
+
+    public enum ScaleDownGravity {
+        Top, Center, Bottom
+    }
+
+    // =============================================================================
     // Private members
     // =============================================================================
 
@@ -28,6 +39,10 @@ public class FancyCoverFlow extends Gallery {
      * Factor (0-1) that defines how much the unselected children should be scaled down. 1 means no scaledown.
      */
     private float maxScaleDown;
+    /**
+     * TODO: Doc
+     */
+    private ScaleDownGravity scaleDownGravity = ScaleDownGravity.Center;
 
     /**
      * Distance in pixels between the transformation effects (alpha, rotation, zoom) are applied.
@@ -128,6 +143,23 @@ public class FancyCoverFlow extends Gallery {
     public void setMaxScaleDown(float maxScaledown) {
         this.maxScaleDown = maxScaledown;
     }
+    /**
+     * TODO: Doc
+     *
+     * @return
+     */
+    public ScaleDownGravity getScaleDownGravity() {
+        return scaleDownGravity;
+    }
+
+    /**
+     * TODO: Doc
+     *
+     * @param scaleDownGravity
+     */
+    public void setScaleDownGravity(ScaleDownGravity scaleDownGravity) {
+        this.scaleDownGravity = scaleDownGravity;
+    }
 
     /**
      * TODO: Write doc
@@ -221,10 +253,27 @@ public class FancyCoverFlow extends Gallery {
         this.transformationCamera.getMatrix(imageMatrix);
         this.transformationCamera.restore();
 
+
+        final float translateX = childWidth / 2.0f;
+        float translateY = 0;
+
+        switch (this.scaleDownGravity) {
+            case Top:
+                translateY = 0;
+                break;
+            case Center:
+                translateY = childHeight / 2.0f;
+                break;
+            case Bottom:
+                translateY = childHeight;
+                break;
+        }
+
         // Zoom.
-        imageMatrix.preTranslate(-childWidth / 2.0f, -childHeight / 2.0f);
+        imageMatrix.preTranslate(-translateX, -translateY);
         imageMatrix.postScale(zoomAmount, zoomAmount);
-        imageMatrix.postTranslate(childWidth / 2.0f, childHeight / 2.0f);
+        imageMatrix.postTranslate(translateX, translateY);
+
 
         return true;
     }
