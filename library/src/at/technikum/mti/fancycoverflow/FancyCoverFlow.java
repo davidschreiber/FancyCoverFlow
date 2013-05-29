@@ -18,6 +18,7 @@
 package at.technikum.mti.fancycoverflow;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.*;
 import android.util.AttributeSet;
 import android.view.View;
@@ -92,16 +93,29 @@ public class FancyCoverFlow extends Gallery {
     public FancyCoverFlow(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.initialize();
+        this.applyXmlAttributes(attrs);
     }
 
     public FancyCoverFlow(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         this.initialize();
+        this.applyXmlAttributes(attrs);
     }
 
     private void initialize() {
         this.transformationCamera = new Camera();
         this.setSpacing(0);
+    }
+
+    private void applyXmlAttributes(AttributeSet attrs) {
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.FancyCoverFlow);
+
+        this.actionDistance = a.getInteger(R.styleable.FancyCoverFlow_actionDistance, ACTION_DISTANCE_AUTO);
+        this.scaleDownGravity = a.getFloat(R.styleable.FancyCoverFlow_scaleDownGravity, 1.0f);
+        this.maxRotation = a.getInteger(R.styleable.FancyCoverFlow_maxRotation, 45);
+        this.unselectedAlpha = a.getFloat(R.styleable.FancyCoverFlow_unselectedAlpha, 0.3f);
+        this.unselectedSaturation = a.getFloat(R.styleable.FancyCoverFlow_unselectedSaturation, 0.0f);
+        this.unselectedScale = a.getFloat(R.styleable.FancyCoverFlow_unselectedScale, 0.75f);
     }
 
     // =============================================================================
