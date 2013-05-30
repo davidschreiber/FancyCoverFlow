@@ -15,6 +15,20 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
     font-family: 'Roboto Slab', Helvetica, arial, sans-serif;
+    text-align: right;
+}
+
+h1 small {
+    position: relative;
+    top: -15px;
+}
+
+h1 small a:visited, h1 small a:link {
+    color: #dddddd;
+}
+
+h1 small a:active, h1 small a:hover {
+    color: #5FC9FF;
 }
 
 p, ul, ol, table, pre, dl {
@@ -74,6 +88,33 @@ section pre.prettyprint {
     border-radius: 5px;
     border: 1px solid #e5e5e5;
     overflow-x: auto;
+}
+
+a#powered-by {
+    display: none;
+    background: rgb(0, 0, 0);
+    background: rgba(0, 0, 0, 0.8);
+    vertical-align: bottom;
+    width: 100%;
+    font-size: 14px;
+    position: fixed;
+    bottom: 0;
+    padding: 16px;
+    line-height: 16px;
+    left: 0;
+    text-align: center;
+}
+
+a#powered-by:link, a#powered-by:visited {
+    color: #ffffff;
+}
+
+a#powered-by:hover, a#powered-by:active {
+    color: #ff8800;
+}
+
+a#powered-by * {
+    vertical-align: bottom;
 }
 
 table {
@@ -248,6 +289,10 @@ footer {
 
     header ul {
         display: none;
+    }
+
+    .wrapper {
+        padding-bottom: 30px;
     }
 }
 

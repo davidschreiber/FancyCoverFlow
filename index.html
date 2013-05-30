@@ -17,7 +17,7 @@
 <div class="wrapper">
     <header>
 
-        <h1 style="vertical-align: top;"><img src="logo.png" width="50" alt="FancyCoverFlow Logo"/>&nbsp;FancyCoverFlow
+        <h1 style="vertical-align: top;"><img src="logo.png" width="50" alt="FancyCoverFlow Logo"/>&nbsp;FancyCoverFlow<br/><small><a href="http://blockhaus-media.com" target="_blank">Powered by blockhaus</a></small>
         </h1>
 
         <p>A cool Open Source cover flow view to make your Android app look more fancy.</p>
@@ -106,6 +106,35 @@ fancyCoverFlow.setUnselectedScale(0.4f);</code></pre>
         </p>
     </footer>
 </div>
+<a id="powered-by" href="http://blockhaus-media.com" target="_blank">FancyCoverFlow is powered by <img height="20" src="img/blockhaus.png" alt="blockhaus medienagentur OG"/></a>
+<script src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(window).scroll(function () {
+            if ($(this).height() + $(this).scrollTop() > (getDocumentHeight()-10)) {
+                if(!$('#powered-by').hasClass('visible')){
+                    $('#powered-by').addClass('visible');
+                    $('#powered-by').css({display: 'block'}).stop().animate({bottom:0});
+                }
+            }else {
+                if($('#powered-by').hasClass('visible')){
+                    $('#powered-by').removeClass('visible').css({display: 'block'});
+                    $('#powered-by').stop().animate({bottom:-2 * $('#powered-by').height()}, function() {
+                        $('#powered-by').css({display: 'none'});
+                    });
+                }
+            }
+        });
+    });
+
+    function getDocumentHeight() {
+     return Math.max(
+      Math.max(document.body.scrollHeight, document.documentElement.scrollHeight),
+      Math.max(document.body.offsetHeight, document.documentElement.offsetHeight),
+      Math.max(document.body.clientHeight, document.documentElement.clientHeight)
+  );
+}
+</script>
 <script src="javascripts/scale.fix.js"></script>
 <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
 </body>
