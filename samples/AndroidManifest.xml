@@ -42,6 +42,10 @@
             android:label="@string/activity_label_simple"/>
 
         <activity
+            android:name=".example.ViewGroupExample"
+            android:label="@string/activity_label_viewgroup"/>
+
+        <activity
             android:name=".example.XmlInflateExample"
             android:label="@string/activity_label_inflate_xml"
             />

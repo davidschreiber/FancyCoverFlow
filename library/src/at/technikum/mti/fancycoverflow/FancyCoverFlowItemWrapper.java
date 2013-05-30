@@ -23,22 +23,26 @@ import android.graphics.*;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * This class has only internal use (package scope).
  * <p/>
- * It is responsible for applying additional effects to each coverflow item, that can only be applied at view level (e.g. color saturation).
+ * It is responsible for applying additional effects to each coverflow item, that can only be applied at view level
+ * (e.g. color saturation).
+ * <p/>
+ * This is a ViewGroup by intention to enable child views in layouts to stay interactive (like buttons) though
+ * transformed.
+ * <p/>
+ * Since this class is only used within the FancyCoverFlowAdapter it doesn't need to check if there are multiple
+ * children or not (there can only be one at all times).
  */
-class FancyCoverFlowItemWrapper extends View {
+@SuppressWarnings("ConstantConditions")
+class FancyCoverFlowItemWrapper extends ViewGroup {
 
     // =============================================================================
     // Private members
     // =============================================================================
-
-    /**
-     * This is the real view that will be shown in the coverflow.
-     */
-    private View wrappedView;
 
     /**
      * This is a matrix to apply color filters (like saturation) to the wrapped view.
@@ -80,7 +84,6 @@ class FancyCoverFlowItemWrapper extends View {
     }
 
     private void init() {
-        this.wrappedView = null;
         this.paint = new Paint();
         this.colorMatrix = new ColorMatrix();
         // TODO: Define a default value for saturation inside an XML.
@@ -91,16 +94,9 @@ class FancyCoverFlowItemWrapper extends View {
     // Getters / Setters
     // =============================================================================
 
-    public void setWrappedView(View wrappedView) {
-        this.wrappedView = wrappedView;
-    }
-
-    public View getWrappedView() {
-        return this.wrappedView;
-    }
-
     public void setSaturation(float saturation) {
         this.colorMatrix.setSaturation(saturation);
+        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(this.colorMatrix);
         this.paint.setColorFilter(new ColorMatrixColorFilter(this.colorMatrix));
     }
 
@@ -109,33 +105,37 @@ class FancyCoverFlowItemWrapper extends View {
     // =============================================================================
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        if (this.wrappedView != null) {
-            int measuredWidth = this.getMeasuredWidth();
-            int measuredHeight = this.getMeasuredHeight();
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-            this.wrappedView.layout(0, 0, measuredWidth, measuredHeight);
-            this.wrappedViewBitmap = Bitmap.createBitmap(measuredWidth, measuredHeight, Bitmap.Config.ARGB_8888);
-            this.wrappedViewDrawingCanvas = new Canvas(this.wrappedViewBitmap);
-        }
+        this.getChildAt(0).measure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        int measuredWidth = this.getMeasuredWidth();
+        int measuredHeight = this.getMeasuredHeight();
+        this.wrappedViewBitmap = Bitmap.createBitmap(measuredWidth, measuredHeight, Bitmap.Config.ARGB_8888);
+        this.wrappedViewDrawingCanvas = new Canvas(this.wrappedViewBitmap);
+        this.getChildAt(0).layout(0, 0, measuredWidth, measuredHeight);
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        if (this.wrappedView != null && this.wrappedViewDrawingCanvas != null) {
+        View childView = getChildAt(0);
 
+        if (childView != null) {
             // If on honeycomb or newer, cache the view.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                if (this.wrappedView.isDirty()) {
-                    this.wrappedView.draw(this.wrappedViewDrawingCanvas);
+                if (childView.isDirty()) {
+                    childView.draw(this.wrappedViewDrawingCanvas);
                 }
             } else {
-                this.wrappedView.draw(this.wrappedViewDrawingCanvas);
+                childView.draw(this.wrappedViewDrawingCanvas);
             }
-
-
-            canvas.drawBitmap(this.wrappedViewBitmap, 0, 0, paint);
         }
+
+        canvas.drawBitmap(this.wrappedViewBitmap, 0, 0, paint);
     }
 }

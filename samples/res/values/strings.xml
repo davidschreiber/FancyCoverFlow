@@ -20,4 +20,5 @@
     <string name="app_name">FancyCoverFlow Samples</string>
     <string name="activity_label_inflate_xml">XML Inflate Example</string>
     <string name="activity_label_simple">Simple Example</string>
+    <string name="activity_label_viewgroup">ViewGroup Example</string>
 </resources>

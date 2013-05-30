@@ -46,12 +46,12 @@ public class SimpleExample extends Activity {
         this.fancyCoverFlow = (FancyCoverFlow) this.findViewById(R.id.fancyCoverFlow);
 
         this.fancyCoverFlow.setAdapter(new FancyCoverFlowSampleAdapter());
-        this.fancyCoverFlow.setUnselectedAlpha(0.0f);
-        this.fancyCoverFlow.setUnselectedSaturation(1.0f);
-        this.fancyCoverFlow.setUnselectedScale(1.5f);
+        this.fancyCoverFlow.setUnselectedAlpha(1.0f);
+        this.fancyCoverFlow.setUnselectedSaturation(0.0f);
+        this.fancyCoverFlow.setUnselectedScale(0.5f);
         this.fancyCoverFlow.setSpacing(50);
-        this.fancyCoverFlow.setMaxRotation(30);
-        this.fancyCoverFlow.setScaleDownGravity(FancyCoverFlow.SCALEDOWN_GRAVITY_CENTER);
+        this.fancyCoverFlow.setMaxRotation(0);
+        this.fancyCoverFlow.setScaleDownGravity(0.2f);
         this.fancyCoverFlow.setActionDistance(FancyCoverFlow.ACTION_DISTANCE_AUTO);
     }
 

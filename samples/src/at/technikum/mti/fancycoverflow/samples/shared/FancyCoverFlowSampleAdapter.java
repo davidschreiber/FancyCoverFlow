@@ -19,8 +19,8 @@ package at.technikum.mti.fancycoverflow.samples.shared;
 
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Gallery;
 import android.widget.ImageView;
+import at.technikum.mti.fancycoverflow.FancyCoverFlow;
 import at.technikum.mti.fancycoverflow.FancyCoverFlowAdapter;
 import at.technikum.mti.fancycoverflow.samples.R;
 
@@ -60,7 +60,7 @@ public class FancyCoverFlowSampleAdapter extends FancyCoverFlowAdapter {
         } else {
             imageView = new ImageView(viewGroup.getContext());
             imageView.setAdjustViewBounds(true);
-            imageView.setLayoutParams(new Gallery.LayoutParams(300, 400));
+            imageView.setLayoutParams(new FancyCoverFlow.LayoutParams(300, 400));
 
         }
 

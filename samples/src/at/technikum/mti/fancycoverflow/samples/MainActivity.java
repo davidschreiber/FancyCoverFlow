@@ -20,12 +20,14 @@ package at.technikum.mti.fancycoverflow.samples;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.hardware.display.DisplayManager;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import at.technikum.mti.fancycoverflow.samples.example.SimpleExample;
+import at.technikum.mti.fancycoverflow.samples.example.ViewGroupExample;
 import at.technikum.mti.fancycoverflow.samples.example.XmlInflateExample;
 
 /**
@@ -53,7 +55,7 @@ public class MainActivity extends ListActivity {
         // Private members
         // =============================================================================
 
-        private final Class[] exampleActivities = new Class[]{SimpleExample.class, XmlInflateExample.class};
+        private final Class[] exampleActivities = new Class[]{SimpleExample.class, ViewGroupExample.class, XmlInflateExample.class};
 
         // =============================================================================
         // Supertype overrides
@@ -82,11 +84,13 @@ public class MainActivity extends ListActivity {
                 view = (TextView) reuseableView;
             } else {
                 view = new TextView(viewGroup.getContext());
+                view.setGravity(Gravity.CENTER_VERTICAL);
+                view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, 200));
             }
 
             final Class activity = this.getItem(i);
 
-            view.setText(activity.getName());
+            view.setText(activity.getSimpleName());
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

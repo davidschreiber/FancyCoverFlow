@@ -35,7 +35,8 @@ public abstract class FancyCoverFlowAdapter extends BaseAdapter {
 
         if (reusableView != null) {
             coverFlowItem = (FancyCoverFlowItemWrapper) reusableView;
-            wrappedView = coverFlowItem.getWrappedView();
+            wrappedView = coverFlowItem.getChildAt(0);
+            coverFlowItem.removeAllViews();
         } else {
             coverFlowItem = new FancyCoverFlowItemWrapper(viewGroup.getContext());
         }
@@ -46,7 +47,7 @@ public abstract class FancyCoverFlowAdapter extends BaseAdapter {
             throw new NullPointerException("getCoverFlowItem() was expected to return a view, but null was returned.");
         }
 
-        coverFlowItem.setWrappedView(wrappedView);
+        coverFlowItem.addView(wrappedView);
         coverFlowItem.setLayoutParams(wrappedView.getLayoutParams());
 
         return coverFlowItem;
