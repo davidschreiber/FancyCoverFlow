@@ -45,6 +45,12 @@ public class FancyCoverFlow extends Gallery {
     // Private members
     // =============================================================================
 
+    private float reflectionRatio = 0.4f;
+
+    private int reflectionGap = 20;
+
+    private boolean reflectionEnabled = false;
+
     /**
      * TODO: Doc
      */
@@ -89,7 +95,6 @@ public class FancyCoverFlow extends Gallery {
         this.initialize();
     }
 
-
     public FancyCoverFlow(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.initialize();
@@ -122,17 +127,57 @@ public class FancyCoverFlow extends Gallery {
     // Getter / Setter
     // =============================================================================
 
+    public float getReflectionRatio() {
+        return reflectionRatio;
+    }
+
+    public void setReflectionRatio(float reflectionRatio) {
+        if (reflectionRatio <= 0 || reflectionRatio > 0.5f) {
+            throw new IllegalArgumentException("reflectionRatio may only be in the interval (0, 0.5]");
+        }
+
+        this.reflectionRatio = reflectionRatio;
+
+        if (this.getAdapter() != null) {
+            ((FancyCoverFlowAdapter) this.getAdapter()).notifyDataSetChanged();
+        }
+    }
+
+    public int getReflectionGap() {
+        return reflectionGap;
+    }
+
+    public void setReflectionGap(int reflectionGap) {
+        this.reflectionGap = reflectionGap;
+
+        if (this.getAdapter() != null) {
+            ((FancyCoverFlowAdapter) this.getAdapter()).notifyDataSetChanged();
+        }
+    }
+
+    public boolean isReflectionEnabled() {
+        return reflectionEnabled;
+    }
+
+    public void setReflectionEnabled(boolean reflectionEnabled) {
+        this.reflectionEnabled = reflectionEnabled;
+
+        if (this.getAdapter() != null) {
+            ((FancyCoverFlowAdapter) this.getAdapter()).notifyDataSetChanged();
+        }
+    }
+
     /**
      * Use this to provide a {@link FancyCoverFlowAdapter} to the coverflow. This
      * method will throw an {@link ClassCastException} if the passed adapter does not
-     * sublass {@link FancyCoverFlowAdapter}.
+     * subclass {@link FancyCoverFlowAdapter}.
      *
      * @param adapter
      */
     @Override
     public void setAdapter(SpinnerAdapter adapter) {
         if (!(adapter instanceof FancyCoverFlowAdapter)) {
-            throw new ClassCastException(FancyCoverFlow.class.getName() + " only works in conjunction with a " + FancyCoverFlowAdapter.class.getName());
+            throw new ClassCastException(FancyCoverFlow.class.getSimpleName() + " only works in conjunction with a " + FancyCoverFlowAdapter.class.getSimpleName());
         }
 
         super.setAdapter(adapter);
@@ -274,37 +319,44 @@ public class FancyCoverFlow extends Gallery {
         // Calculate the abstract amount for all effects.
         final float effectsAmount = Math.min(1.0f, Math.max(-1.0f, (1.0f / actionDistance) * (childCenter - coverFlowCenter)));
 
-        // Calculate the value for each effect.
-        final int rotationAngle = (int) (-effectsAmount * this.maxRotation);
-        final float zoomAmount = (this.unselectedScale - 1) * Math.abs(effectsAmount) + 1;
-        final float alphaAmount = (this.unselectedAlpha - 1) * Math.abs(effectsAmount) + 1;
-        final float saturationAmount = (this.unselectedSaturation - 1) * Math.abs(effectsAmount) + 1;
-
         // Clear previous transformations and set transformation type (matrix + alpha).
         t.clear();
         t.setTransformationType(Transformation.TYPE_BOTH);
 
-        // Apply alpha.
-        t.setAlpha(alphaAmount);
+        // Alpha
+        if (this.unselectedAlpha != 1) {
+            final float alphaAmount = (this.unselectedAlpha - 1) * Math.abs(effectsAmount) + 1;
+            t.setAlpha(alphaAmount);
+        }
 
-        // Pass over saturation to the wrapper.
-        item.setSaturation(saturationAmount);
+        // Saturation
+        if (this.unselectedSaturation != 1) {
+            // Pass over saturation to the wrapper.
+            final float saturationAmount = (this.unselectedSaturation - 1) * Math.abs(effectsAmount) + 1;
+            item.setSaturation(saturationAmount);
+        }
+
+        final Matrix imageMatrix = t.getMatrix();
 
         // Apply rotation.
-        final Matrix imageMatrix = t.getMatrix();
-        this.transformationCamera.save();
-        this.transformationCamera.rotateY(rotationAngle);
-        this.transformationCamera.getMatrix(imageMatrix);
-        this.transformationCamera.restore();
-
-        // Calculate the scale anchor (y anchor can be altered)
-        final float translateX = childWidth / 2.0f;
-        final float translateY = childHeight * this.scaleDownGravity;
+        if (this.maxRotation != 0) {
+            final int rotationAngle = (int) (-effectsAmount * this.maxRotation);
+            this.transformationCamera.save();
+            this.transformationCamera.rotateY(rotationAngle);
+            this.transformationCamera.getMatrix(imageMatrix);
+            this.transformationCamera.restore();
+        }
 
         // Zoom.
-        imageMatrix.preTranslate(-translateX, -translateY);
-        imageMatrix.postScale(zoomAmount, zoomAmount);
-        imageMatrix.postTranslate(translateX, translateY);
+        if (this.unselectedScale != 1) {
+            final float zoomAmount = (this.unselectedScale - 1) * Math.abs(effectsAmount) + 1;
+            // Calculate the scale anchor (y anchor can be altered)
+            final float translateX = childWidth / 2.0f;
+            final float translateY = childHeight * this.scaleDownGravity;
+            imageMatrix.preTranslate(-translateX, -translateY);
+            imageMatrix.postScale(zoomAmount, zoomAmount);
+            imageMatrix.postTranslate(translateX, translateY);
+        }
 
         return true;
     }

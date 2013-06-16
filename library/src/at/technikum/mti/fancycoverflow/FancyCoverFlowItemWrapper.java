@@ -17,6 +17,9 @@
 
 package at.technikum.mti.fancycoverflow;
 
+import android.*;
+import android.R;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.*;
@@ -44,6 +47,16 @@ class FancyCoverFlowItemWrapper extends ViewGroup {
     // Private members
     // =============================================================================
 
+    private float saturation;
+
+    private boolean isReflectionEnabled = false;
+
+    private float imageReflectionRatio;
+
+    private int reflectionGap;
+
+    private float originalScaledownFactor;
+
     /**
      * This is a matrix to apply color filters (like saturation) to the wrapped view.
      */
@@ -63,6 +76,7 @@ class FancyCoverFlowItemWrapper extends ViewGroup {
      * This canvas is used to let the wrapped view draw it's content.
      */
     private Canvas wrappedViewDrawingCanvas;
+
 
     // =============================================================================
     // Constructor
@@ -94,10 +108,39 @@ class FancyCoverFlowItemWrapper extends ViewGroup {
     // Getters / Setters
     // =============================================================================
 
+    void setReflectionEnabled(boolean hasReflection) {
+        if (hasReflection != this.isReflectionEnabled) {
+            this.isReflectionEnabled = hasReflection;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                // Turn off hardware acceleration if necessary (reflections won't support it).
+                this.setLayerType(hasReflection ? View.LAYER_TYPE_SOFTWARE : View.LAYER_TYPE_HARDWARE, null);
+            }
+
+            this.remeasureChildren();
+        }
+    }
+
+    void setReflectionRatio(float imageReflectionRatio) {
+        if (imageReflectionRatio != this.imageReflectionRatio) {
+            this.imageReflectionRatio = imageReflectionRatio;
+            this.remeasureChildren();
+        }
+    }
+
+    void setReflectionGap(int reflectionGap) {
+        if (reflectionGap != this.reflectionGap) {
+            this.reflectionGap = reflectionGap;
+            this.remeasureChildren();
+        }
+    }
+
     public void setSaturation(float saturation) {
-        this.colorMatrix.setSaturation(saturation);
-        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(this.colorMatrix);
-        this.paint.setColorFilter(new ColorMatrixColorFilter(this.colorMatrix));
+        if (saturation != this.saturation) {
+            this.saturation = saturation;
+            this.colorMatrix.setSaturation(saturation);
+            this.paint.setColorFilter(new ColorMatrixColorFilter(this.colorMatrix));
+        }
     }
 
     // =============================================================================
@@ -107,17 +150,28 @@ class FancyCoverFlowItemWrapper extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        this.getChildAt(0).measure(widthMeasureSpec, heightMeasureSpec);
+        this.remeasureChildren();
     }
 
+    @SuppressLint("DrawAllocation")
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        int measuredWidth = this.getMeasuredWidth();
-        int measuredHeight = this.getMeasuredHeight();
-        this.wrappedViewBitmap = Bitmap.createBitmap(measuredWidth, measuredHeight, Bitmap.Config.ARGB_8888);
-        this.wrappedViewDrawingCanvas = new Canvas(this.wrappedViewBitmap);
-        this.getChildAt(0).layout(0, 0, measuredWidth, measuredHeight);
+        if (changed) {
+            int measuredWidth = this.getMeasuredWidth();
+            int measuredHeight = this.getMeasuredHeight();
+
+            if (this.wrappedViewBitmap == null || this.wrappedViewBitmap.getWidth() != measuredWidth || this.wrappedViewBitmap.getHeight() != measuredHeight) {
+                this.wrappedViewBitmap = Bitmap.createBitmap(measuredWidth, measuredHeight, Bitmap.Config.ARGB_8888);
+                this.wrappedViewDrawingCanvas = new Canvas(this.wrappedViewBitmap);
+            }
+
+            View child = getChildAt(0);
+            int childWidth = child.getMeasuredWidth();
+            int childHeight = child.getMeasuredHeight();
+            int childLeft = (measuredWidth - childWidth) / 2;
+            int childRight = measuredWidth - childLeft;
+            child.layout(childLeft, 0, childRight, childHeight);
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -130,12 +184,65 @@ class FancyCoverFlowItemWrapper extends ViewGroup {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 if (childView.isDirty()) {
                     childView.draw(this.wrappedViewDrawingCanvas);
+
+                    if (this.isReflectionEnabled) {
+                        this.createReflectedImages();
+                    }
                 }
             } else {
                 childView.draw(this.wrappedViewDrawingCanvas);
             }
         }
 
-        canvas.drawBitmap(this.wrappedViewBitmap, 0, 0, paint);
+        canvas.drawBitmap(this.wrappedViewBitmap, (this.getWidth() - childView.getWidth()) / 2, 0, paint);
+    }
+
+    // =============================================================================
+    // Methods
+    // =============================================================================
+
+    private void remeasureChildren() {
+        View child = this.getChildAt(0);
+
+        if (child != null) {
+            // When reflection is enabled calculate proportional scale down factor.
+            final int originalChildHeight = this.getMeasuredHeight();
+            this.originalScaledownFactor = this.isReflectionEnabled ? (originalChildHeight * (1 - this.imageReflectionRatio) - reflectionGap) / originalChildHeight : 1.0f;
+            final int childHeight = (int) (this.originalScaledownFactor * originalChildHeight);
+            final int childWidth = (int) (this.originalScaledownFactor * getMeasuredWidth());
+
+            int heightSpec = MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.AT_MOST);
+            int widthSpec = MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.AT_MOST);
+            this.getChildAt(0).measure(widthSpec, heightSpec);
+        }
+    }
+
+    /**
+     * Creates the reflected images.
+     *
+     * @return true, if successful
+     */
+    private void createReflectedImages() {
+
+        final int width = this.wrappedViewBitmap.getWidth();
+        final int height = this.wrappedViewBitmap.getHeight();
+
+
+        final Matrix matrix = new Matrix();
+        matrix.postScale(1, -1);
+
+
+        final int scaledDownHeight = (int) (height * originalScaledownFactor);
+        final int invertedHeight = height - scaledDownHeight - reflectionGap;
+        final int invertedBitmapSourceTop = scaledDownHeight - invertedHeight;
+        final Bitmap invertedBitmap = Bitmap.createBitmap(this.wrappedViewBitmap, 0, invertedBitmapSourceTop, width, invertedHeight, matrix, true);
+
+        this.wrappedViewDrawingCanvas.drawBitmap(invertedBitmap, 0, scaledDownHeight + reflectionGap, null);
+
+        final Paint paint = new Paint();
+        final LinearGradient shader = new LinearGradient(0, height * imageReflectionRatio + reflectionGap, 0, height, 0x70ffffff, 0x00ffffff, Shader.TileMode.CLAMP);
+        paint.setShader(shader);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+        this.wrappedViewDrawingCanvas.drawRect(0, height * (1 - imageReflectionRatio), width, height, paint);
     }
 }
