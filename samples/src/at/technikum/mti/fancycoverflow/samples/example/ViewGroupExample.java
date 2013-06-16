@@ -117,21 +117,20 @@ public class ViewGroupExample extends Activity {
             super(context);
 
             this.setOrientation(VERTICAL);
-            this.setGravity(Gravity.CENTER);
-            this.setWeightSum(3);
 
             this.textView = new TextView(context);
             this.imageView = new ImageView(context);
             this.button = new Button(context);
 
-            LinearLayout.LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1);
+            LinearLayout.LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             this.textView.setLayoutParams(layoutParams);
             this.imageView.setLayoutParams(layoutParams);
             this.button.setLayoutParams(layoutParams);
 
             this.textView.setGravity(Gravity.CENTER);
 
-            this.imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            this.imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            this.imageView.setAdjustViewBounds(true);
 
             this.button.setText("Goto GitHub");
             this.button.setOnClickListener(new OnClickListener() {
@@ -157,10 +156,6 @@ public class ViewGroupExample extends Activity {
 
         private ImageView getImageView() {
             return imageView;
-        }
-
-        private Button getButton() {
-            return button;
         }
     }
 }
