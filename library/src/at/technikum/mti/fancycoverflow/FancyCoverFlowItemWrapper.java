@@ -151,6 +151,13 @@ class FancyCoverFlowItemWrapper extends ViewGroup {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         this.remeasureChildren();
+
+        // If we have reflection enabled, the original image is scaled down and a reflection is added beneath. Thus,
+        // while maintaining the same height the width decreases and we need to adjust measured width.
+        // WARNING: This is a hack because we do not obey the EXACTLY MeasureSpec mode that we will get mostly.
+        if (this.isReflectionEnabled) {
+            this.setMeasuredDimension((int) (this.getMeasuredWidth() * this.originalScaledownFactor), this.getMeasuredHeight());
+        }
     }
 
     @SuppressLint("DrawAllocation")
