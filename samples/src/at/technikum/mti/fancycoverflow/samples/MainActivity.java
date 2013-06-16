@@ -17,12 +17,13 @@
 
 package at.technikum.mti.fancycoverflow.samples;
 
-import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
-import android.hardware.display.DisplayManager;
 import android.os.Bundle;
-import android.view.*;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
@@ -31,9 +32,6 @@ import at.technikum.mti.fancycoverflow.samples.example.ViewGroupExample;
 import at.technikum.mti.fancycoverflow.samples.example.ViewGroupReflectionExample;
 import at.technikum.mti.fancycoverflow.samples.example.XmlInflateExample;
 
-/**
- * Created by david on 29.05.13.
- */
 public class MainActivity extends ListActivity {
 
     @Override
@@ -78,15 +76,18 @@ public class MainActivity extends ListActivity {
         }
 
         @Override
-        public View getView(int i, View reuseableView, ViewGroup viewGroup) {
-            TextView view = null;
+        public View getView(int i, View reusableView, ViewGroup viewGroup) {
+            TextView view;
 
-            if (reuseableView != null) {
-                view = (TextView) reuseableView;
+            if (reusableView != null) {
+                view = (TextView) reusableView;
             } else {
-                view = new TextView(viewGroup.getContext());
+                final Context context = viewGroup.getContext();
+                final int listItemPadding = context.getResources().getDimensionPixelSize(R.dimen.mainActivityListItemPadding);
+                view = new TextView(context);
                 view.setGravity(Gravity.CENTER_VERTICAL);
-                view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, 200));
+                view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, context.getResources().getDimensionPixelSize(R.dimen.mainActivityListItemHeight)));
+                view.setPadding(listItemPadding, 0, listItemPadding, 0);
             }
 
             final Class activity = this.getItem(i);
