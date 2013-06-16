@@ -27,7 +27,8 @@
 
     <application
         android:label="@string/app_name"
-        android:icon="@drawable/ic_launcher">
+        android:icon="@drawable/ic_launcher"
+        android:theme="@android:style/Theme.Light">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
@@ -44,6 +45,10 @@
         <activity
             android:name=".example.ViewGroupExample"
             android:label="@string/activity_label_viewgroup"/>
+
+        <activity
+            android:name=".example.ViewGroupReflectionExample"
+            android:label="@string/activity_label_viewgroupreflection"/>
 
         <activity
             android:name=".example.XmlInflateExample"
