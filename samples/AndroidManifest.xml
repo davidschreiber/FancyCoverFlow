@@ -54,5 +54,10 @@
             android:name=".example.XmlInflateExample"
             android:label="@string/activity_label_inflate_xml"
             />
+
+        <activity
+            android:name=".example.ConvexExample"
+            android:label="@string/activity_label_convex"
+            />
     </application>
 </manifest>

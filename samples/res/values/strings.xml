@@ -22,4 +22,5 @@
     <string name="activity_label_simple">Simple Example</string>
     <string name="activity_label_viewgroup">ViewGroup Example</string>
     <string name="activity_label_viewgroupreflection">ViewGroup with Reflection</string>
+    <string name="activity_label_convex">Convex effect</string>
 </resources>

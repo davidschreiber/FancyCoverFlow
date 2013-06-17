@@ -27,10 +27,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import at.technikum.mti.fancycoverflow.samples.example.SimpleExample;
-import at.technikum.mti.fancycoverflow.samples.example.ViewGroupExample;
-import at.technikum.mti.fancycoverflow.samples.example.ViewGroupReflectionExample;
-import at.technikum.mti.fancycoverflow.samples.example.XmlInflateExample;
+import at.technikum.mti.fancycoverflow.samples.example.*;
 
 public class MainActivity extends ListActivity {
 
@@ -54,7 +51,7 @@ public class MainActivity extends ListActivity {
         // Private members
         // =============================================================================
 
-        private final Class[] exampleActivities = new Class[]{SimpleExample.class, ViewGroupExample.class, ViewGroupReflectionExample.class, XmlInflateExample.class};
+        private final Class[] exampleActivities = new Class[]{SimpleExample.class, ViewGroupExample.class, ViewGroupReflectionExample.class, XmlInflateExample.class, ConvexExample.class};
 
         // =============================================================================
         // Supertype overrides
