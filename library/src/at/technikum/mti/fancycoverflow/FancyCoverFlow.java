@@ -351,12 +351,14 @@ public class FancyCoverFlow extends Gallery {
         if (this.unselectedScale != 1) {
             final float zoomAmount = (this.unselectedScale - 1) * Math.abs(effectsAmount) + 1;
             // Calculate the scale anchor (y anchor can be altered)
-            final float translateX = childWidth / 2.0f;
-            final float translateY = childHeight * this.scaleDownGravity;
-            imageMatrix.preTranslate(-translateX, -translateY);
             imageMatrix.postScale(zoomAmount, zoomAmount);
-            imageMatrix.postTranslate(translateX, translateY);
         }
+
+        // Apply transformation anchor.
+        final float translateX = childWidth / 2.0f;
+        final float translateY = childHeight * this.scaleDownGravity;
+        imageMatrix.preTranslate(-translateX, -translateY);
+        imageMatrix.postTranslate(translateX, translateY);
 
         return true;
     }
