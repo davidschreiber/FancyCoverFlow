@@ -51,6 +51,10 @@
             android:label="@string/activity_label_viewgroupreflection"/>
 
         <activity
+            android:name=".example.ActionDistanceExample"
+            android:label="@string/activity_label_actiondistance"/>
+
+        <activity
             android:name=".example.XmlInflateExample"
             android:label="@string/activity_label_inflate_xml"
             />

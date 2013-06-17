@@ -51,7 +51,7 @@ public class MainActivity extends ListActivity {
         // Private members
         // =============================================================================
 
-        private final Class[] exampleActivities = new Class[]{SimpleExample.class, ViewGroupExample.class, ViewGroupReflectionExample.class, XmlInflateExample.class, ConvexExample.class};
+        private final Class[] exampleActivities = new Class[]{SimpleExample.class, ViewGroupExample.class, ViewGroupReflectionExample.class, ActionDistanceExample.class, XmlInflateExample.class, ConvexExample.class};
 
         // =============================================================================
         // Supertype overrides
